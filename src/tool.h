@@ -1,35 +1,11 @@
-//setupWiFi.h
-
-#ifndef _tool_h
-#define _tool_h
-
-//Prototype of function in the .cpp file
-void setup();
-void loop();
-
-// Declarations
-#include "M5StickCPlus2.h"
-
-#endif // _setupWiFi_h
-
-// AAAAAAAAAAAAAAAAAAAAAAAAAA
-
 #pragma once
 #include <Arduino.h>
 #include <M5GFX.h>
 #include <lgfx/v1/panel/Panel_ST7789.hpp>
-#include <Button.h>
-#include <Wire.h>
-#include <MPU6886.h>
+#include "Button.h"
 
-#include <BLE2902.h>
-#include <BLEDevice.h>
-#include <BLEServer.h>
-#include <BLEUtils.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-
-#include <cplus_RTC.h>
 
 #include <esp_wifi.h>
 
@@ -38,23 +14,7 @@ void loop();
 #define display Disbuff
 #define displayUpdate Displaybuff
 
-#define LCD_MOSI_PIN 15
-#define LCD_MISO_PIN -1
-#define LCD_SCLK_PIN 13
-#define LCD_DC_PIN 14
-#define LCD_CS_PIN 5
-#define LCD_RST_PIN 12
-#define LCD_BUSY_PIN -1
-#define LCD_BL_PIN 27
-
-#define POWER_HOLD_PIN 4
-#define I2C_SDA_PIN 21
-#define I2C_SCL_PIN 22
-
-#define I2S_DATA_PIN 34
-#define I2S_SCLK_PIN 0
-
-#define BUZZ_PIN 2
+#define MAX_VOLTAGE 4300.0;
 
 class CLite_GFX : public lgfx::LGFX_Device
 {
@@ -88,22 +48,19 @@ public:
             cfg.panel_height = 240;
             cfg.offset_x = 52;
             cfg.offset_y = 40;
-            // cfg.offset_x     = 0;
-            // cfg.offset_y     = 0;
 
             _panel_instance.config(cfg);
         }
-        {                                        // バックライト制御の設定を行います。（必要なければ削除）
-            auto cfg = _light_instance.config(); // バックライト設定用の構造体を取得します。
+        {                                        
+            auto cfg = _light_instance.config(); 
 
-            cfg.pin_bl = 27;    // バックライトが接続されているピン番号
-            cfg.invert = false; // バックライトの輝度を反転させる場合 true
-            // cfg.freq   = 44100;           // バックライトのPWM周波数
-            cfg.freq = 200;      // バックライトのPWM周波数
-            cfg.pwm_channel = 7; // 使用するPWMのチャンネル番号
+            cfg.pin_bl = 27;
+            cfg.invert = false;
+            cfg.freq = 200;     
+            cfg.pwm_channel = 7; 
 
             _light_instance.config(cfg);
-            _panel_instance.setLight(&_light_instance); // バックライトをパネルにセットします。
+            _panel_instance.setLight(&_light_instance);
         }
 
         setPanel(&_panel_instance);
@@ -111,11 +68,7 @@ public:
 };
 
 extern const unsigned char ImageData[768];
-extern const unsigned char error_48[4608];
-extern const unsigned char icon_ir[4608];
-extern const unsigned char icon_ble[4608];
 extern const unsigned char icon_wifi[4608];
-extern const unsigned char icon_ble_disconnect[4608];
 
 namespace TEST
 {
@@ -123,10 +76,7 @@ namespace TEST
     class TEST
     {
     private:
-        bool is_test_mode;
-
         void hardware_init();
-        void power_off();
 
         inline void _tone(unsigned int frequency, unsigned long duration = 0UL) { tone(BUZZ_PIN, frequency, duration); }
         inline void _noTone() { noTone(BUZZ_PIN); }
@@ -152,41 +102,6 @@ namespace TEST
         void checkReboot();
         bool checkNext();
         void waitNext();
-
-        /* IMU */
-        MPU6886 imu;
-        void imu_init();
-        void imu_test();
-
-        /* Mic */
-        void mic_init();
-        void mic_test();
-        void mic_test_one_task();
-
-        void DisplayMicro();
-
-        void new_mic_test();
-        void new_mic_test_fft();
-
-        /* IR */
-        void ir_init();
-        void ir_test();
-
-        /* BLE */
-        void ble_init();
-        void ble_test();
-
-        void DisPlayBLESend();
-
-        /* RTC */
-        void rtc_init();
-        void rtc_test();
-        void rtc_wakeup_test();
-
-        void DisplayRTC();
-
-        /* GPIO */
-        void gpio_test();
 
         /* Wifi */
         void wifi_init();

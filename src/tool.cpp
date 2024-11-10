@@ -8,7 +8,6 @@ namespace TOOL
         gpio_reset_pin((gpio_num_t)POWER_HOLD_PIN);
         pinMode(POWER_HOLD_PIN, OUTPUT);
         digitalWrite(POWER_HOLD_PIN, HIGH);
-
         Wire1.begin(I2C_SDA_PIN, I2C_SCL_PIN);
     }
 
